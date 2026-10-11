@@ -10,4 +10,7 @@ with Evtx(log_path) as log:
         root = ET.fromstring(xml_text)
         event_id_tag = root.find("e:System/e:EventID", ns)
         print(event_id_tag.text)
+
+        time_tag = root.find("e:System/e:TimeCreated", ns)
+        print(time_tag.get("SystemTime"))
         break
