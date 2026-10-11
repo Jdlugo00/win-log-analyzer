@@ -13,4 +13,10 @@ with Evtx(log_path) as log:
 
         time_tag = root.find("e:System/e:TimeCreated", ns)
         print(time_tag.get("SystemTime"))
+
+        data_tags = root.findall("e:EventData/e:Data", ns)
+        for data in data_tags:
+            if data.get("Name") == "Image":
+                print(data.text)
+
         break
