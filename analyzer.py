@@ -17,20 +17,29 @@ def count_event_ids(log_path):
     return counts
 
 
+interesting_ids = {
+    "4625": "failed logon",
+    "4740": "account lockout",
+    "4728": "added to global group",
+    "4732": "added to local group",
+    "1102": "audit log cleared",
+    "4720": "user account created",
+}
+
 files_checked = 0
-files_failed = 0
 
 for log_path in samples_folder.rglob("*.evtx"):
     files_checked += 1
     print(f"Checking {files_checked}: {log_path.name}", flush=True)
+
     try:
         counts = count_event_ids(log_path)
     except Exception as error:
-        files_failed += 1
         print(f"Could not read {log_path.name}: {error}")
         continue
 
-    if "4625" in counts:
-        print(f"{counts['4625']:>5} failed logons  {log_path.name}")
+    for event_id, description in interesting_ids.items():
+        if event_id in counts:
+            print(f"   FOUND {counts[event_id]:>4} x {event_id} ({description})  {log_path.name}")
 
-print(f"\nChecked {files_checked} files, {files_failed} could not be read.")
+print(f"\nChecked {files_checked} files.")
